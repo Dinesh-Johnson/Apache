@@ -11,34 +11,42 @@ import java.util.Iterator;
 public class ExcelIteratorDemo {
     public static void main(String[] args) throws IOException {
 
-        String excel = "C:\\Users\\Personal\\Documents\\SportsPerson.xlsx"; //path
+        String excel = "C:\\Users\\Personal\\Documents\\SportsPerson.xlsx";//path
 
-        FileInputStream inputStream = new FileInputStream(excel);  //open the file
-        XSSFWorkbook workbook = new XSSFWorkbook(inputStream);    //get the workbook
-        XSSFSheet sheet = workbook.getSheetAt(0);           //get the Sheet
+        try(FileInputStream inputStream = new FileInputStream(excel);  //open the file
+        XSSFWorkbook workbook = new XSSFWorkbook(inputStream)) {    //get the workbook
+            XSSFSheet sheet = workbook.getSheetAt(0);           //get the Sheet
 
-        Iterator iterator = sheet.iterator();
+            Iterator iterator = sheet.iterator();
 
-        while (iterator.hasNext()){
+            while (iterator.hasNext()) {
 
-           XSSFRow row=(XSSFRow) iterator.next();
-           Iterator cellIterator=row.cellIterator();
+                XSSFRow row = (XSSFRow) iterator.next();
+                Iterator cellIterator = row.cellIterator();
 
-           while (cellIterator.hasNext()){
-               XSSFCell cell = (XSSFCell) cellIterator.next();
-               switch (cell.getCellType()){
-                   case STRING:
-                       System.out.print(cell.getStringCellValue()+" "); break;
-                   case NUMERIC:
-                       System.out.print(cell.getNumericCellValue()+" ");break;
-                   case BOOLEAN:
-                       System.out.print(cell.getBooleanCellValue()+" ");break;
+                while (cellIterator.hasNext()) {
+                    XSSFCell cell = (XSSFCell) cellIterator.next();
+                    switch (cell.getCellType()) {
+                        case STRING:
+                            System.out.print(cell.getStringCellValue() + " ");
+                            break;
+                        case NUMERIC:
+                            System.out.print(cell.getNumericCellValue() + " ");
+                            break;
+                        case BOOLEAN:
+                            System.out.print(cell.getBooleanCellValue() + " ");
+                            break;
 
-               }
-               System.out.print("  |  ");
-           }
-            System.out.println();
+                    }
+
+                    System.out.print("  |  ");
+                }
+                System.out.println();
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found: " + excel);
+        } catch (IOException e) {
+            System.out.println("Error reading the Excel file: " + e.getMessage());
         }
-
     }
 }
